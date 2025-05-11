@@ -1,6 +1,3 @@
-// API configuration and utility functions
-
-// Get the API URL from environment variables or use a default
 const API_URL = process.env.REACT_APP_API_URL || 'https://fire-h0u2.onrender.com';
 
 // API endpoints
@@ -12,7 +9,6 @@ const ENDPOINTS = {
   ACCIDENTS: `${API_URL}/api/accidents`
 };
 
-// Generic fetch function with error handling
 async function fetchFromAPI(endpoint, options = {}) {
   try {
     const response = await fetch(endpoint, options);
@@ -23,6 +19,11 @@ async function fetchFromAPI(endpoint, options = {}) {
     
     return await response.json();
   } catch (error) {
+    if (error.name === 'AbortError') {
+      // Suppress abort errors as they are expected during fetch cancellation
+      console.log('Fetch aborted');
+      return;
+    }
     console.error('API request failed:', error);
     throw error;
   }
@@ -31,7 +32,7 @@ async function fetchFromAPI(endpoint, options = {}) {
 // API functions
 export const api = {
   // Get the latest sensor data
-  getLatestSensorData: () => fetchFromAPI(ENDPOINTS.SENSOR),
+  getLatestSensorData: (signal) => fetchFromAPI(ENDPOINTS.SENSOR, { signal }),
   
   // Get all sensor data
   getAllSensorData: () => fetchFromAPI(ENDPOINTS.SENSOR_ALL),

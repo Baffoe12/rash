@@ -73,7 +73,8 @@ export default function SensorHistory() {
     vibration: '#f44336', // Red for vibration (potential accidents)
     distance: '#2196f3',  // Blue for distance readings
     impact: '#e91e63',    // Pink for impact readings
-    seatbelt: '#4caf50'    // Green for seatbelt status
+    seatbelt: '#4caf50',    // Green for seatbelt status
+    heart_rate: '#9c27b0'  // Purple for heart rate
   };
 
   // Define sensor descriptions
@@ -82,7 +83,8 @@ export default function SensorHistory() {
     vibration: 'Vibration sensor readings (spikes indicate potential accidents)',
     distance: 'Ultrasonic distance sensor readings (lower values indicate closer objects)',
     impact: 'MPU6050 impact/acceleration readings (spikes indicate potential accidents)',
-    seatbelt: 'Seatbelt sensor status (1 = buckled, 0 = unbuckled)'
+    seatbelt: 'Seatbelt sensor status (1 = buckled, 0 = unbuckled)',
+    heart_rate: 'Heart rate readings (beats per minute)'
   };
 
   return (

@@ -19,19 +19,23 @@ export default function RealTimeSensor() {
   const abortControllerRef = useRef(null);
 
   useEffect(() => {
-    const fetchData = async () => {
-      if (abortControllerRef.current) {
-        abortControllerRef.current.abort();
-      }
-      abortControllerRef.current = new AbortController();
+    let isMounted = true;
+    let abortController = new AbortController();
 
+    const fetchData = async () => {
       try {
-        const sensorData = await api.getLatestSensorData(abortControllerRef.current.signal);
-        setData(sensorData);
-        setError(null);
+        // Abort previous fetch if any
+        abortController.abort();
+        abortController = new AbortController();
+
+        const sensorData = await api.getLatestSensorData(abortController.signal);
+        if (isMounted) {
+          setData(sensorData);
+          setError(null);
+        }
       } catch (err) {
         if (err.name !== 'AbortError') {
-          setError('Failed to fetch sensor data');
+          if (isMounted) setError('Failed to fetch sensor data');
           console.error(err);
         } else {
           console.log('Fetch aborted');
@@ -42,10 +46,9 @@ export default function RealTimeSensor() {
     fetchData();
     const interval = setInterval(fetchData, 2000);
     return () => {
+      isMounted = false;
       clearInterval(interval);
-      if (abortControllerRef.current) {
-        abortControllerRef.current.abort();
-      }
+      abortController.abort();
     };
   }, []);
 

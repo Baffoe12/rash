@@ -11,19 +11,20 @@ const HeartRateCard = () => {
   const abortControllerRef = useRef(null);
 
   useEffect(() => {
+    let isMounted = true;
+    const abortController = new AbortController();
+
     const fetchHeartRate = async () => {
-      if (abortControllerRef.current) {
-        abortControllerRef.current.abort();
-      }
-      abortControllerRef.current = new AbortController();
       try {
         setLoading(true);
         setError(null);
-        const data = await api.getLatestSensorData(abortControllerRef.current.signal); // Pass abort signal
-        if (data && data.heart_rate !== undefined) {
-          setHeartRate(data.heart_rate);
-        } else {
-          throw new Error('No pulse data available');
+        const data = await api.getLatestSensorData(abortController.signal); // Pass abort signal
+        if (isMounted) {
+          if (data && data.heart_rate !== undefined) {
+            setHeartRate(data.heart_rate);
+          } else {
+            throw new Error('No pulse data available');
+          }
         }
       } catch (err) {
         if (err.name === 'AbortError') {
@@ -31,10 +32,10 @@ const HeartRateCard = () => {
           console.log('Fetch aborted');
         } else {
           console.error('Error fetching heart rate:', err);
-          setError(err.message);
+          if (isMounted) setError(err.message);
         }
       } finally {
-        setLoading(false);
+        if (isMounted) setLoading(false);
       }
     };
 
@@ -43,10 +44,9 @@ const HeartRateCard = () => {
     fetchHeartRate(); // Initial fetch
 
     return () => {
+      isMounted = false;
       clearInterval(interval);
-      if (abortControllerRef.current) {
-        abortControllerRef.current.abort();
-      }
+      abortController.abort();
     };
   }, []); // Empty dependency array means this runs once on mount
 
