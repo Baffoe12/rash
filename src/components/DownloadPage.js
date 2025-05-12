@@ -1,6 +1,7 @@
 import React from 'react';
 import DownloadReportButton from './DownloadReportButton';
-import { Container, Typography, Box, Divider, Button } from '@mui/material';
+import { Container, Typography, Box, Paper, Stack, Button, Tooltip } from '@mui/material';
+import DownloadIcon from '@mui/icons-material/Download';
 
 export default function DownloadPage() {
   const downloadFile = async (url, filename) => {
@@ -29,18 +30,47 @@ export default function DownloadPage() {
       <Typography variant="h4" gutterBottom>
         Download Reports
       </Typography>
-      <Box sx={{ mt: 3, display: 'flex', flexDirection: 'column', gap: 2 }}>
-        <DownloadReportButton />
-        <Button variant="contained" onClick={() => downloadFile('/api/reports/sensor-excel', 'sensor_data.xlsx')}>
-          Download Sensor Data Excel
-        </Button>
-        <Button variant="contained" onClick={() => downloadFile('/api/reports/accident-excel', 'accident_events.xlsx')}>
-          Download Accident Events Excel
-        </Button>
-        <Button variant="contained" onClick={() => downloadFile('/api/reports/stats-excel', 'statistics_report.xlsx')}>
-          Download Statistics Report Excel
-        </Button>
-      </Box>
+      <Stack spacing={3} sx={{ mt: 3 }}>
+        <Paper elevation={3} sx={{ p: 2 }}>
+          <DownloadReportButton />
+        </Paper>
+        <Paper elevation={3} sx={{ p: 2 }}>
+          <Tooltip title="Download sensor data in Excel format">
+            <Button
+              variant="contained"
+              startIcon={<DownloadIcon />}
+              onClick={() => downloadFile('/api/reports/sensor-excel', 'sensor_data.xlsx')}
+              fullWidth
+            >
+              Download Sensor Data Excel
+            </Button>
+          </Tooltip>
+        </Paper>
+        <Paper elevation={3} sx={{ p: 2 }}>
+          <Tooltip title="Download accident events data in Excel format">
+            <Button
+              variant="contained"
+              startIcon={<DownloadIcon />}
+              onClick={() => downloadFile('/api/reports/accident-excel', 'accident_events.xlsx')}
+              fullWidth
+            >
+              Download Accident Events Excel
+            </Button>
+          </Tooltip>
+        </Paper>
+        <Paper elevation={3} sx={{ p: 2 }}>
+          <Tooltip title="Download statistics report in Excel format">
+            <Button
+              variant="contained"
+              startIcon={<DownloadIcon />}
+              onClick={() => downloadFile('/api/reports/stats-excel', 'statistics_report.xlsx')}
+              fullWidth
+            >
+              Download Statistics Report Excel
+            </Button>
+          </Tooltip>
+        </Paper>
+      </Stack>
     </Container>
   );
 }
