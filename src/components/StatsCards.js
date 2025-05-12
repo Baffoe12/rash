@@ -10,7 +10,7 @@ export default function StatsCards() {
 
   useEffect(() => {
     console.log('StatsCards: Fetching stats...');
-    fetch('/api/stats')
+     fetch(`${process.env.REACT_APP_API_URL || 'https://fire-h0u2.onrender.com'}/api/stats`)
       .then(res => {
         console.log('StatsCards: Response status:', res.status);
         if (!res.ok) {

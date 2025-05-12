@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography, Dialog, DialogTitle, DialogContent, DialogActions, Button, Box
+  Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography, Dialog, DialogTitle, DialogContent, DialogActions, Button, Box, Alert
 } from '@mui/material';
 
 export default function AccidentImpactTable() {
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState(null);
   const [accidentImpacts, setAccidentImpacts] = useState([]);
+  const [error, setError] = useState(null);
 
   const handleRowClick = (row) => {
     setSelected(row);
@@ -28,9 +29,11 @@ export default function AccidentImpactTable() {
       })
       .then(data => {
         setAccidentImpacts(data);
+        setError(null);
       })
       .catch(err => {
         console.error('Error fetching accident locations:', err);
+        setError('Failed to fetch accident locations. Please try again later.');
       });
   }, []);
 
@@ -42,6 +45,7 @@ export default function AccidentImpactTable() {
       <Typography variant="h5" fontWeight="bold" mb={2} color="#000">
         Accident Impact Log
       </Typography>
+      {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
       <TableContainer component={Paper} sx={{ borderRadius: 3, background: 'linear-gradient(135deg,#f5f5f5 0%,#e0e0e0 100%)', boxShadow: 8 }}>
         <Table sx={{ minWidth: 650 }}>
           <TableHead>
