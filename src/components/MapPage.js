@@ -68,7 +68,7 @@ function MapPage() {
 
   useEffect(() => {
     console.log('MapPage: Fetching accident locations...');
-    fetch('/api/map')
+    fetch(`${process.env.REACT_APP_API_URL || 'https://fire-h0u2.onrender.com'}/api/map`)
       .then(res => {
         if (!res.ok) {
           throw new Error(`HTTP error! Status: ${res.status}`);
@@ -89,7 +89,7 @@ function MapPage() {
 
   useEffect(() => {
     let interval = setInterval(() => {
-      fetch('/api/car/position')
+      fetch(`${process.env.REACT_APP_API_URL || 'https://fire-h0u2.onrender.com'}/api/car/position`)
         .then(res => res.json())
         .then(data => {
           const pos = [data.lat, data.lng];
@@ -139,7 +139,7 @@ function MapPage() {
           setSnackbarOpen(true);
           return;
         }
-        fetch('/api/emergency-alert', {
+        fetch(`${process.env.REACT_APP_API_URL || 'https://fire-h0u2.onrender.com'}/api/emergency-alert`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email: emergencyEmail, latitude, longitude }),
