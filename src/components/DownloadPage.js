@@ -3,6 +3,8 @@ import DownloadReportButton from './DownloadReportButton';
 import { Container, Typography, Box, Paper, Stack, Button, Tooltip, LinearProgress } from '@mui/material';
 import DownloadIcon from '@mui/icons-material/Download';
 
+const BACKEND_BASE_URL = process.env.REACT_APP_API_URL || 'https://fire-h0u2.onrender.com';
+
 export default function DownloadPage() {
   const [loading, setLoading] = useState({
     sensor: false,
@@ -13,7 +15,7 @@ export default function DownloadPage() {
   const downloadFile = async (url, filename, key) => {
     try {
       setLoading(prev => ({ ...prev, [key]: true }));
-      const response = await fetch(url);
+      const response = await fetch(BACKEND_BASE_URL + url);
       if (!response.ok) {
         throw new Error(`Failed to download file: ${response.statusText}`);
       }
