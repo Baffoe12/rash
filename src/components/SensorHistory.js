@@ -10,7 +10,7 @@ export default function SensorHistory() {
 
   useEffect(() => {
     console.log('SensorHistory: Fetching sensor history data...');
-    fetch('/api/sensor/history')
+    fetch(`${process.env.REACT_APP_API_URL || 'https://fire-h0u2.onrender.com'}/api/sensor/history`)
       .then(res => {
         console.log('SensorHistory: Response status:', res.status);
         if (!res.ok) {

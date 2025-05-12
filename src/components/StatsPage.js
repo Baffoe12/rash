@@ -23,7 +23,7 @@ export default function StatsPage() {
   const [error, setError] = useState(null);
   
   useEffect(() => {
-    fetch('/api/stats')
+    fetch(`${process.env.REACT_APP_API_URL || 'https://fire-h0u2.onrender.com'}/api/stats`)
       .then(res => {
         if (!res.ok) {
           throw new Error(`HTTP error! Status: ${res.status}`);

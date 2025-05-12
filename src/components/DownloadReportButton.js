@@ -10,7 +10,7 @@ export default function DownloadReportButton() {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch('/api/reports/pdf');
+      const response = await fetch(`${process.env.REACT_APP_API_URL || 'https://fire-h0u2.onrender.com'}/api/reports/pdf`);
       if (!response.ok) {
         throw new Error(`Failed to download report: ${response.statusText}`);
       }

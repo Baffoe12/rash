@@ -3,45 +3,15 @@ import {
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography, Dialog, DialogTitle, DialogContent, DialogActions, Button, Box
 } from '@mui/material';
 
-// Example data, replace with real API data as needed
-const accidentImpacts = [
-  {
-    id: 1,
-    type: 'Severe Collision',
-    time: '2025-04-21 14:22',
-    impactLevel: 'High',
-    summary: 'Front-end collision at 65 km/h. Airbags deployed.',
-    details: 'A severe front-end collision was detected by the MPU6050 and vibration sensors. Emergency call initiated. Driver and passenger airbags deployed. Vehicle immobilized. Emergency services notified. No fatalities reported.'
-  },
-  {
-    id: 2,
-    type: 'Minor Bump',
-    time: '2025-04-20 09:10',
-    impactLevel: 'Low',
-    summary: 'Low-speed bump detected in parking lot.',
-    details: 'Minor impact detected by vibration sensor. No emergency action required. System logged the event for record-keeping. No injuries or vehicle damage.'
-  },
-  {
-    id: 3,
-    type: 'Side Impact',
-    time: '2025-04-18 17:45',
-    impactLevel: 'Medium',
-    summary: 'Side collision at intersection. Engine disabled.',
-    details: 'Side impact detected by ultrasonic and vibration sensors. Engine automatically disabled. Emergency SMS sent to family. No major injuries, but vehicle towed for inspection.'
-  },
-  {
-    id: 4,
-    type: 'Rear-end Collision',
-    time: '2025-04-17 12:30',
-    impactLevel: 'Medium',
-    summary: 'Rear-end collision at traffic light.',
-    details: 'Rear-end collision detected by vibration sensors. Minor injuries reported. Vehicle towed for repairs.'
-  }
-];
+import React, { useState, useEffect } from 'react';
+import {
+  Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography, Dialog, DialogTitle, DialogContent, DialogActions, Button, Box
+} from '@mui/material';
 
 export default function AccidentImpactTable() {
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState(null);
+  const [accidentImpacts, setAccidentImpacts] = useState([]);
 
   const handleRowClick = (row) => {
     setSelected(row);
@@ -52,6 +22,22 @@ export default function AccidentImpactTable() {
     setOpen(false);
     setSelected(null);
   };
+
+  useEffect(() => {
+    fetch(`${process.env.REACT_APP_API_URL || 'https://fire-h0u2.onrender.com'}/api/map`)
+      .then(res => {
+        if (!res.ok) {
+          throw new Error(`Failed to fetch accident locations: ${res.status}`);
+        }
+        return res.json();
+      })
+      .then(data => {
+        setAccidentImpacts(data);
+      })
+      .catch(err => {
+        console.error('Error fetching accident locations:', err);
+      });
+  }, []);
 
   // Limit to 3 most recent accident impacts
   const displayedAccidents = accidentImpacts.slice(0, 3);
@@ -114,5 +100,4 @@ export default function AccidentImpactTable() {
         </DialogActions>
       </Dialog>
     </Box>
-  );
-}
+  )};

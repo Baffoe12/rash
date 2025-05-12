@@ -10,7 +10,7 @@ export default function AccidentLog() {
 
   useEffect(() => {
     console.log('AccidentLog: Fetching accident data...');
-    fetch('/api/accidents')
+    fetch(`${process.env.REACT_APP_API_URL || 'https://fire-h0u2.onrender.com'}/api/accidents`)
       .then(res => {
         console.log('AccidentLog: Response status:', res.status);
         if (!res.ok) {
