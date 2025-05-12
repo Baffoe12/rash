@@ -8,6 +8,7 @@ import AccidentImpactTable from './AccidentImpactTable';
 import ConnectionStatusButton from './ConnectionStatusButton';
 import RealTimeSensor from './RealTimeSensor';
 import StatusBar from './StatusBar';
+import PredictiveRiskCard from './PredictiveRiskCard';
 
 function AnimatedStat({ children, delay = 0 }) {
   return (
@@ -23,6 +24,11 @@ export default function DashboardHome() {
   useEffect(() => {
     setShow(true);
   }, []);
+
+  // Dummy location and timestamp for demonstration
+  const lat = 5.6545;
+  const lng = -0.1869;
+  const timestamp = new Date().toISOString();
 
   return (
     <>
@@ -302,6 +308,12 @@ export default function DashboardHome() {
           <Box sx={{ width: '100%', maxWidth: 900, mb: 4, zIndex: 2, mx: 'auto' }}>
             <AnimatedStat delay={500}>
               <StatsCards />
+            </AnimatedStat>
+          </Box>
+          {/* Predictive Risk Card Section */}
+          <Box sx={{ width: '100%', maxWidth: 900, mb: 4, zIndex: 2, mx: 'auto' }}>
+            <AnimatedStat delay={550}>
+              <PredictiveRiskCard lat={lat} lng={lng} timestamp={timestamp} />
             </AnimatedStat>
           </Box>
           {/* Accident Impact Table Section */}
