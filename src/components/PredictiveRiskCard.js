@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Card, CardContent, Typography, CircularProgress, Box } from '@mui/material';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const API_URL = process.env.REACT_APP_API_URL || "https://fire-h0u2.onrender.com";
 
@@ -59,31 +60,40 @@ export default function PredictiveRiskCard({ lat, lng, timestamp }) {
   }
 
   return (
-    <Card>
-      <CardContent>
-        <Typography variant="h6" gutterBottom>
-          Predictive Risk Score
-        </Typography>
-        <Typography
-          variant="h4"
-          color={
-            riskData.riskScore > 70
-              ? 'error'
-              : riskData.riskScore > 40
-              ? 'warning.main'
-              : 'success.main'
-          }
-        >
-          {riskData.riskScore}%
-        </Typography>
-        <Typography variant="body2" gutterBottom>
-          Accidents in area (last 7 days): {riskData.accidentsCount}
-        </Typography>
-        <Typography variant="body2" gutterBottom>
-          Sensor events in area (last 7 days): {riskData.sensorEventsCount}
-        </Typography>
-        <Typography variant="body2">Current weather: {riskData.weatherCondition}</Typography>
-      </CardContent>
-    </Card>
+    <AnimatePresence>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: 20 }}
+        transition={{ duration: 0.5 }}
+      >
+        <Card>
+          <CardContent>
+            <Typography variant="h6" gutterBottom>
+              Predictive Risk Score
+            </Typography>
+            <Typography
+              variant="h4"
+              color={
+                riskData.riskScore > 70
+                  ? 'error'
+                  : riskData.riskScore > 40
+                  ? 'warning.main'
+                  : 'success.main'
+              }
+            >
+              {riskData.riskScore}%
+            </Typography>
+            <Typography variant="body2" gutterBottom>
+              Accidents in area (last 7 days): {riskData.accidentsCount}
+            </Typography>
+            <Typography variant="body2" gutterBottom>
+              Sensor events in area (last 7 days): {riskData.sensorEventsCount}
+            </Typography>
+            <Typography variant="body2">Current weather: {riskData.weatherCondition}</Typography>
+          </CardContent>
+        </Card>
+      </motion.div>
+    </AnimatePresence>
   );
 }
