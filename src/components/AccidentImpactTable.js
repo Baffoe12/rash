@@ -1,8 +1,3 @@
-import React, { useState } from 'react';
-import {
-  Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography, Dialog, DialogTitle, DialogContent, DialogActions, Button, Box
-} from '@mui/material';
-
 import React, { useState, useEffect } from 'react';
 import {
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography, Dialog, DialogTitle, DialogContent, DialogActions, Button, Box
@@ -100,4 +95,5 @@ export default function AccidentImpactTable() {
         </DialogActions>
       </Dialog>
     </Box>
-  )};
+  );
+};
