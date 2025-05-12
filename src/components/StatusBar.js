@@ -3,6 +3,7 @@ import { AppBar, Toolbar, Typography, Box, Chip, Divider, Button, Dialog } from 
 import { CheckCircle, WarningAmber, Speed, DisplaySettings } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import EmergencyAlertStatus from './EmergencyAlertStatus';
+import LCDDisplay from './LCDDisplay';
 
 export default function StatusBar({ sensorData }) {
   const [emergencyDialogOpen, setEmergencyDialogOpen] = useState(false);
@@ -43,9 +44,7 @@ export default function StatusBar({ sensorData }) {
             <Divider orientation="vertical" flexItem sx={{ mx: 1 }} />
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <DisplaySettings color="primary" />
-              <Typography variant="body2" sx={{ minWidth: 150 }}>
-                LCD: {sensorData && sensorData.lcd_display ? sensorData.lcd_display : 'No Display Data'}
-              </Typography>
+              <LCDDisplay text={sensorData && sensorData.lcd_display ? sensorData.lcd_display : 'No Display Data'} />
             </Box>
           </Box>
           
