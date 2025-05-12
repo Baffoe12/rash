@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Card, CardContent, Typography, CircularProgress, Box } from '@mui/material';
 
+const API_URL = process.env.REACT_APP_API_URL || "https://fire-h0u2.onrender.com";
+
 export default function PredictiveRiskCard({ lat, lng, timestamp }) {
   const [riskData, setRiskData] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -11,7 +13,9 @@ export default function PredictiveRiskCard({ lat, lng, timestamp }) {
       setLoading(true);
       setError(null);
       try {
-        const response = await fetch('/api/predictive-risk?lat=' + lat + '&lng=' + lng + '&timestamp=' + timestamp);
+        const response = await fetch(
+          API_URL + '/api/predictive-risk?lat=' + lat + '&lng=' + lng + '&timestamp=' + timestamp
+        );
         if (!response.ok) {
           throw new Error('Failed to fetch risk data');
         }
@@ -60,7 +64,16 @@ export default function PredictiveRiskCard({ lat, lng, timestamp }) {
         <Typography variant="h6" gutterBottom>
           Predictive Risk Score
         </Typography>
-        <Typography variant="h4" color={riskData.riskScore > 70 ? 'error' : riskData.riskScore > 40 ? 'warning.main' : 'success.main'}>
+        <Typography
+          variant="h4"
+          color={
+            riskData.riskScore > 70
+              ? 'error'
+              : riskData.riskScore > 40
+              ? 'warning.main'
+              : 'success.main'
+          }
+        >
           {riskData.riskScore}%
         </Typography>
         <Typography variant="body2" gutterBottom>
@@ -69,9 +82,7 @@ export default function PredictiveRiskCard({ lat, lng, timestamp }) {
         <Typography variant="body2" gutterBottom>
           Sensor events in area (last 7 days): {riskData.sensorEventsCount}
         </Typography>
-        <Typography variant="body2">
-          Current weather: {riskData.weatherCondition}
-        </Typography>
+        <Typography variant="body2">Current weather: {riskData.weatherCondition}</Typography>
       </CardContent>
     </Card>
   );
