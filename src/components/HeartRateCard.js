@@ -13,6 +13,7 @@ const HeartRateCard = () => {
   useEffect(() => {
     let isMounted = true;
     const abortController = new AbortController();
+    let timerId;
 
     const fetchHeartRate = async () => {
       try {
@@ -39,12 +40,19 @@ const HeartRateCard = () => {
       }
     };
 
-    // Poll heart rate data every second
-    const interval = setInterval(fetchHeartRate, 1000);
+    // Poll heart rate data every second with debounce
+    const pollInterval = 1000;
+    const debouncedFetch = () => {
+      clearTimeout(timerId);
+      timerId = setTimeout(fetchHeartRate, pollInterval);
+    };
+
+    const interval = setInterval(debouncedFetch, pollInterval);
     fetchHeartRate(); // Initial fetch
 
     return () => {
       isMounted = false;
+      clearTimeout(timerId);
       clearInterval(interval);
       abortController.abort();
     };

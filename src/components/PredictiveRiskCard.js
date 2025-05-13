@@ -34,6 +34,9 @@ export default function PredictiveRiskCard({ lat, lng, timestamp }) {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    const debounceTimeout = 2000; // 2 seconds debounce
+    let timerId;
+
     async function fetchRiskData() {
       setLoading(true);
       setError(null);
@@ -52,9 +55,15 @@ export default function PredictiveRiskCard({ lat, lng, timestamp }) {
         setLoading(false);
       }
     }
+
     if (lat && lng && timestamp) {
-      fetchRiskData();
+      clearTimeout(timerId);
+      timerId = setTimeout(() => {
+        fetchRiskData();
+      }, debounceTimeout);
     }
+
+    return () => clearTimeout(timerId);
   }, [lat, lng, timestamp]);
 
   if (loading) {
