@@ -9,6 +9,7 @@ import ConnectionStatusButton from './ConnectionStatusButton';
 import RealTimeSensor from './RealTimeSensor';
 import StatusBar from './StatusBar';
 import PredictiveRiskCard from './PredictiveRiskCard';
+import api from '../api'; // Import the API module
 
 function AnimatedStat({ children, delay = 0 }) {
   return (
@@ -35,7 +36,7 @@ export default function DashboardHome() {
 
     const fetchData = async () => {
       try {
-        const data = await import('../api').then(api => api.getLatestSensorData());
+        const data = await api.getLatestSensorData();
         // Check if engine state changed from running to stopped
         const currentEngineRunning = isEngineRunning(data.lcd_display);
         if (previousEngineState.current === true && currentEngineRunning === false) {
@@ -403,7 +404,7 @@ export default function DashboardHome() {
                     color="#fff"
                     sx={{ letterSpacing: 1, fontSize: 48 }}
                   >
-                    Safe Driving & Rescue Measures
+                    SafeDrive & Rescue Measures
                   </Typography>
                 </Box>
                 <Typography variant="h6" color="#b0bec5" mb={2} sx={{ fontSize: 26 }}>
@@ -463,25 +464,6 @@ export default function DashboardHome() {
       </Fade>
       <StatusBar sensorData={sensorData} />
     </>
-  )};
+  );
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
