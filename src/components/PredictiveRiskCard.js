@@ -4,6 +4,29 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 const API_URL = process.env.REACT_APP_API_URL || "https://fire-h0u2.onrender.com";
 
+const weatherIcons = {
+  'clear sky': 'https://openweathermap.org/img/wn/01d.png',
+  'few clouds': 'https://openweathermap.org/img/wn/02d.png',
+  'scattered clouds': 'https://openweathermap.org/img/wn/03d.png',
+  'broken clouds': 'https://openweathermap.org/img/wn/04d.png',
+  'shower rain': 'https://openweathermap.org/img/wn/09d.png',
+  rain: 'https://openweathermap.org/img/wn/10d.png',
+  thunderstorm: 'https://openweathermap.org/img/wn/11d.png',
+  snow: 'https://openweathermap.org/img/wn/13d.png',
+  mist: 'https://openweathermap.org/img/wn/50d.png',
+};
+
+function getWeatherIcon(condition) {
+  if (!condition) return null;
+  const key = condition.toLowerCase();
+  for (const iconKey in weatherIcons) {
+    if (key.includes(iconKey)) {
+      return weatherIcons[iconKey];
+    }
+  }
+  return null;
+}
+
 export default function PredictiveRiskCard({ lat, lng, timestamp }) {
   const [riskData, setRiskData] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -59,6 +82,8 @@ export default function PredictiveRiskCard({ lat, lng, timestamp }) {
     return null;
   }
 
+  const weatherIcon = getWeatherIcon(riskData.weatherCondition);
+
   return (
     <AnimatePresence>
       <motion.div
@@ -72,25 +97,53 @@ export default function PredictiveRiskCard({ lat, lng, timestamp }) {
             <Typography variant="h6" gutterBottom>
               Predictive Risk Score
             </Typography>
-            <Typography
-              variant="h4"
-              color={
-                riskData.riskScore > 70
-                  ? 'error'
-                  : riskData.riskScore > 40
-                  ? 'warning.main'
-                  : 'success.main'
-              }
+            <motion.div
+              animate={{ scale: [1, 1.2, 1] }}
+              transition={{ duration: 1.5, repeat: Infinity }}
+              style={{ display: 'inline-block' }}
             >
-              {riskData.riskScore}%
-            </Typography>
+              <Typography
+                variant="h4"
+                color={
+                  riskData.riskScore > 70
+                    ? 'error'
+                    : riskData.riskScore > 40
+                    ? 'warning.main'
+                    : 'success.main'
+                }
+              >
+                {riskData.riskScore}%
+              </Typography>
+            </motion.div>
             <Typography variant="body2" gutterBottom>
               Accidents in area (last 7 days): {riskData.accidentsCount}
             </Typography>
             <Typography variant="body2" gutterBottom>
               Sensor events in area (last 7 days): {riskData.sensorEventsCount}
             </Typography>
-            <Typography variant="body2">Current weather: {riskData.weatherCondition}</Typography>
+            <Box display="flex" alignItems="center" gap={1} sx={{ position: 'relative' }}>
+              {weatherIcon && (
+                <img
+                  src={weatherIcon}
+                  alt={riskData.weatherCondition}
+                  style={{ width: 24, height: 24 }}
+                />
+              )}
+              <Typography variant="body2">Current weather: {riskData.weatherCondition}</Typography>
+              <img
+                src="https://cdn-icons-png.flaticon.com/512/565/565547.png"
+                alt="Risk Icon"
+                style={{
+                  position: 'absolute',
+                  right: 0,
+                  top: -10,
+                  width: 40,
+                  height: 40,
+                  opacity: 0.3,
+                  pointerEvents: 'none',
+                }}
+              />
+            </Box>
           </CardContent>
         </Card>
       </motion.div>
