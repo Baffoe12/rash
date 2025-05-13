@@ -57,7 +57,11 @@ export default function DashboardHome() {
   // Dummy location and timestamp for demonstration
   const lat = 5.6545;
   const lng = -0.1869;
-  const timestamp = new Date().toISOString();
+  const [timestamp, setTimestamp] = React.useState(null);
+
+  React.useEffect(() => {
+    setTimestamp(new Date().toISOString());
+  }, []);
 
   return (
     <>
