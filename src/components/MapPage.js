@@ -62,6 +62,41 @@ function MapPage() {
   const [error, setError] = useState(null);
   const carPathRef = useRef([]);
   const [addresses, setAddresses] = useState({});
+  const [weatherDataMap, setWeatherDataMap] = useState({}); // key: location id, value: weather condition text
+
+  useEffect(() => {
+    const fetchWeatherDataForLocations = async () => {
+      const promises = locations.map(async (loc) => {
+        try {
+          const response = await fetch(
+            `${process.env.REACT_APP_API_URL || 'https://fire-h0u2.onrender.com'}/api/environmental-data?lat=${loc.lat}&lng=${loc.lng}&timestamp=${loc.timestamp}`
+          );
+          if (!response.ok) throw new Error('Failed to fetch weather data');
+          const data = await response.json();
+          let weatherCondition = 'Unknown';
+          if (data.current && data.current.condition) {
+            weatherCondition = data.current.condition.text;
+          } else if (data.forecast && data.forecast.forecastday && data.forecast.forecastday.length > 0) {
+            weatherCondition = data.forecast.forecastday[0].day.condition.text;
+          }
+          return { id: loc.id, weatherCondition };
+        } catch (error) {
+          console.error(`Error fetching weather for location ${loc.id}:`, error);
+          return { id: loc.id, weatherCondition: 'Unknown' };
+        }
+      });
+      const results = await Promise.all(promises);
+      const weatherMap = results.reduce((acc, curr) => {
+        acc[curr.id] = curr.weatherCondition;
+        return acc;
+      }, {});
+      setWeatherDataMap(weatherMap);
+    };
+
+    if (locations.length > 0) {
+      fetchWeatherDataForLocations();
+    }
+  }, [locations]);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMsg, setSnackbarMsg] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState('success');
@@ -239,7 +274,7 @@ function MapPage() {
                           <strong>Location:</strong> {loc.lat.toFixed(4)}, {loc.lng.toFixed(4)}<br />
                           <strong>Address:</strong> <span style={{color:'#1976d2'}}>{addresses[loc.id] || 'Loading address...'}</span>
                         </Box>
-                        <Box sx={{ mt: 1 }}>
+                      <Box sx={{ mt: 1 }}>
                           <a
                             href={`https://www.google.com/maps/search/?api=1&query=${loc.lat},${loc.lng}`}
                             target="_blank"
@@ -248,6 +283,18 @@ function MapPage() {
                           >
                             View on Google Maps
                           </a>
+                        </Box>
+                        <Box sx={{ mt: 1, display: 'flex', alignItems: 'center', gap: 1 }}>
+                          {weatherDataMap[loc.id] && (
+                            <>
+                              <img
+                                src={getWeatherIcon(weatherDataMap[loc.id])}
+                                alt={weatherDataMap[loc.id]}
+                                style={{ width: 24, height: 24 }}
+                              />
+                              <Typography variant="body2">{weatherDataMap[loc.id]}</Typography>
+                            </>
+                          )}
                         </Box>
                       </Box>
                     </Popup>
