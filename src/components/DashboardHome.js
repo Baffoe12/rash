@@ -463,4 +463,25 @@ export default function DashboardHome() {
       </Fade>
       <StatusBar sensorData={sensorData} />
     </>
-  );
+  )};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
