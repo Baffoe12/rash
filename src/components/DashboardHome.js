@@ -20,9 +20,37 @@ function AnimatedStat({ children, delay = 0 }) {
 
 export default function DashboardHome() {
   const [show, setShow] = useState(false);
+  const [sensorData, setSensorData] = useState(null);
+  const previousEngineState = React.useRef(null);
 
   useEffect(() => {
     setShow(true);
+  }, []);
+
+  useEffect(() => {
+    const isEngineRunning = (lcdDisplay) => {
+      if (!lcdDisplay) return false;
+      return lcdDisplay.includes('Engine: RUNNING');
+    };
+
+    const fetchData = async () => {
+      try {
+        const data = await import('../api').then(api => api.getLatestSensorData());
+        // Check if engine state changed from running to stopped
+        const currentEngineRunning = isEngineRunning(data.lcd_display);
+        if (previousEngineState.current === true && currentEngineRunning === false) {
+          console.log('Engine stopped! Saving sensor data...');
+          // Here you can implement saving logic if needed
+        }
+        previousEngineState.current = currentEngineRunning;
+        setSensorData(data);
+      } catch (err) {
+        console.error('Error fetching sensor data:', err);
+      }
+    };
+    fetchData();
+    const id = setInterval(fetchData, 1000);
+    return () => clearInterval(id);
   }, []);
 
   // Dummy location and timestamp for demonstration
@@ -230,7 +258,7 @@ export default function DashboardHome() {
                     p: 2,
                   }}
                 >
-                  <LiveSensorCard />
+                  <LiveSensorCard sensorData={sensorData} />
                 </Card>
               </AnimatedStat>
             </Grid>
@@ -433,7 +461,6 @@ export default function DashboardHome() {
           </Grow>
         </Box>
       </Fade>
-      <StatusBar sensorData={null} />
+      <StatusBar sensorData={sensorData} />
     </>
   );
-}

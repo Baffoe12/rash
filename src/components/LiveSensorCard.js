@@ -3,7 +3,6 @@ import { Card, CardContent, Typography, Chip, Stack, Box, Paper, Button, Snackba
 import SensorsIcon from '@mui/icons-material/Sensors';
 import SaveIcon from '@mui/icons-material/Save';
 import { motion } from 'framer-motion';
-import api from '../api'; // Import the API utility
 
 function statusColor(val, type) {
   if (type === 'alcohol') return val > 600 ? 'error' : val > 300 ? 'warning' : 'success';
@@ -13,8 +12,7 @@ function statusColor(val, type) {
   return 'default';
 }
 
-export default function LiveSensorCard() {
-  const [data, setData] = useState(null);
+export default function LiveSensorCard({ sensorData }) {
   const [savedData, setSavedData] = useState([]);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
@@ -28,13 +26,13 @@ export default function LiveSensorCard() {
 
   // Function to save current sensor data
   const saveSensorData = () => {
-    if (!data) return;
+    if (!sensorData) return;
 
     // Create a new entry with timestamp
     const entry = {
-      ...data,
+      ...sensorData,
       savedAt: new Date().toISOString(),
-      id: data.id || Date.now() // Use existing ID or generate one
+      id: sensorData.id || Date.now() // Use existing ID or generate one
     };
 
     // Add to saved data array
@@ -70,49 +68,19 @@ export default function LiveSensorCard() {
   }, []);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await api.getLatestSensorData(); // Use the API utility to fetch sensor data
-        console.log('Received sensor data:', data);
+    if (!sensorData) return;
 
-        // Enhanced debugging
-        console.log('LCD Display value:', data.lcd_display);
-        console.log('Timestamp:', data.timestamp);
-        console.log('Data ID:', data.id);
+    // Check if engine state changed from running to stopped
+    const currentEngineRunning = isEngineRunning(sensorData.lcd_display);
+    if (previousEngineState.current === true && currentEngineRunning === false) {
+      console.log('Engine stopped! Saving sensor data...');
+      // Save the data on engine stop
+      saveSensorData();
+    }
+    previousEngineState.current = currentEngineRunning;
+  }, [sensorData]);
 
-        // Check if this is new data
-        if (data && data.id !== undefined) {
-          if (!window.lastSensorId) {
-            window.lastSensorId = data.id;
-            console.log('First data point received, ID:', data.id);
-          } else if (window.lastSensorId !== data.id) {
-            console.log('New data received! Previous ID:', window.lastSensorId, 'New ID:', data.id);
-            window.lastSensorId = data.id;
-          } else {
-            console.log('Same data as before, ID still:', data.id);
-          }
-        }
-
-        // Check if engine state changed from running to stopped
-        const currentEngineRunning = isEngineRunning(data.lcd_display);
-        if (previousEngineState.current === true && currentEngineRunning === false) {
-          console.log('Engine stopped! Saving sensor data...');
-          // Save the data on engine stop
-          saveSensorData();
-        }
-        previousEngineState.current = currentEngineRunning;
-
-        setData(data);
-      } catch (err) {
-        console.error('Error fetching sensor data:', err);
-      }
-    };
-    fetchData();
-    const id = setInterval(fetchData, 1000); // Update more frequently (every 1 second)
-    return () => clearInterval(id);
-  }, []);
-
-  if (!data) {
+  if (!sensorData) {
     return (
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -152,7 +120,7 @@ export default function LiveSensorCard() {
           </Stack>
 
           {/* LCD Display Simulation */}
-          {data.lcd_display && (
+          {sensorData.lcd_display && (
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -191,7 +159,7 @@ export default function LiveSensorCard() {
                     letterSpacing: '0.5px'
                   }}
                 >
-                  {data.lcd_display}
+                  {sensorData.lcd_display}
                 </Typography>
               </Paper>
             </motion.div>
@@ -201,36 +169,36 @@ export default function LiveSensorCard() {
             <Stack direction="row" gap={1} flexWrap="wrap" sx={{ mb: 1 }}>
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                 <Chip 
-                  label={`Alcohol: ${data.alcohol}`} 
-                  color={statusColor(data.alcohol, 'alcohol')} 
+                  label={`Alcohol: ${sensorData.alcohol}`} 
+                  color={statusColor(sensorData.alcohol, 'alcohol')} 
                   sx={{ fontWeight: 'bold' }}
                 />
               </motion.div>
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                 <Chip 
-                  label={`Vibration: ${data.vibration}`} 
-                  color={statusColor(data.vibration, 'vibration')} 
+                  label={`Vibration: ${sensorData.vibration}`} 
+                  color={statusColor(sensorData.vibration, 'vibration')} 
                   sx={{ fontWeight: 'bold' }}
                 />
               </motion.div>
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                 <Chip 
-                  label={`Distance: ${data.distance}`} 
-                  color={statusColor(data.distance, 'distance')} 
+                  label={`Distance: ${sensorData.distance}`} 
+                  color={statusColor(sensorData.distance, 'distance')} 
                   sx={{ fontWeight: 'bold' }}
                 />
               </motion.div>
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                 <Chip 
-                  label={`Seatbelt: ${data.seatbelt ? 'On' : 'Off'}`} 
-                  color={data.seatbelt ? 'success':'error'} 
+                  label={`Seatbelt: ${sensorData.seatbelt ? 'On' : 'Off'}`} 
+                  color={sensorData.seatbelt ? 'success':'error'} 
                   sx={{ fontWeight: 'bold' }}
                 />
               </motion.div>
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                 <Chip 
-                  label={`Impact: ${data.impact}`} 
-                  color={statusColor(data.impact, 'impact')} 
+                  label={`Impact: ${sensorData.impact}`} 
+                  color={statusColor(sensorData.impact, 'impact')} 
                   sx={{ fontWeight: 'bold' }}
                 />
               </motion.div>
@@ -238,15 +206,15 @@ export default function LiveSensorCard() {
             <Stack direction="row" gap={1} flexWrap="wrap">
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                 <Chip 
-                  label={`Seatbelt: ${data.seatbelt ? "Fastened" : "Unfastened"}`} 
-                  color={data.seatbelt ? "success" : "error"}
+                  label={`Seatbelt: ${sensorData.seatbelt ? "Fastened" : "Unfastened"}`} 
+                  color={sensorData.seatbelt ? "success" : "error"}
                   sx={{ fontWeight: 'bold' }}
                 />
               </motion.div>
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                 <Chip 
-                  label={`Impact: ${data.impact}`} 
-                  color={statusColor(data.impact, 'impact')} 
+                  label={`Impact: ${sensorData.impact}`} 
+                  color={statusColor(sensorData.impact, 'impact')} 
                   sx={{ fontWeight: 'bold' }}
                 />
               </motion.div>
