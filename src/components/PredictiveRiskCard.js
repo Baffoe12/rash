@@ -14,6 +14,7 @@ const weatherIcons = {
   thunderstorm: 'https://openweathermap.org/img/wn/11d.png',
   snow: 'https://openweathermap.org/img/wn/13d.png',
   mist: 'https://openweathermap.org/img/wn/50d.png',
+  hot: 'https://cdn-icons-png.flaticon.com/512/869/869869.png', // sun icon for hot weather
 };
 
 function getWeatherIcon(condition) {
@@ -84,6 +85,9 @@ export default function PredictiveRiskCard({ lat, lng, timestamp }) {
 
   const weatherIcon = getWeatherIcon(riskData.weatherCondition);
 
+  // Determine if hot weather based on condition text
+  const isHotWeather = riskData.weatherCondition && riskData.weatherCondition.toLowerCase().includes('hot');
+
   return (
     <AnimatePresence>
       <motion.div
@@ -122,9 +126,9 @@ export default function PredictiveRiskCard({ lat, lng, timestamp }) {
               Sensor events in area (last 7 days): {riskData.sensorEventsCount}
             </Typography>
             <Box display="flex" alignItems="center" gap={1} sx={{ position: 'relative' }}>
-              {weatherIcon && (
+              {(weatherIcon || isHotWeather) && (
                 <img
-                  src={weatherIcon}
+                  src={isHotWeather ? weatherIcons.hot : weatherIcon}
                   alt={riskData.weatherCondition}
                   style={{ width: 24, height: 24 }}
                 />
