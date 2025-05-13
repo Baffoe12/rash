@@ -9,6 +9,7 @@ import ConnectionStatusButton from './ConnectionStatusButton';
 import RealTimeSensor from './RealTimeSensor';
 import StatusBar from './StatusBar';
 import PredictiveRiskCard from './PredictiveRiskCard';
+import SensorHistory from './SensorHistory';  // Added import
 import api from '../api'; // Import the API module
 
 function AnimatedStat({ children, delay = 0 }) {
@@ -60,7 +61,6 @@ export default function DashboardHome() {
   const timestamp = new Date().toISOString();
 
   return (
-    <>
       <Fade in={show} timeout={700}>
         <Box
           sx={{
@@ -302,12 +302,12 @@ export default function DashboardHome() {
             alignItems="stretch"
             sx={{ maxWidth: 1400, mb: 3, zIndex: 2 }}
           >
-            <Grid item xs={12} md={8}>
+            <Grid item xs={12} md={12}>
               <AnimatedStat delay={450}>
                 <Card
                   sx={{
-                    minHeight: 200,
-                    minWidth: 200,
+                    minHeight: 400,
+                    minWidth: 400,
                     maxWidth: '100%',
                     display: 'flex',
                     flexDirection: 'column',
@@ -328,142 +328,12 @@ export default function DashboardHome() {
                     color: '#fff',
                   }}
                 >
-                  <RealTimeSensor />
+                  <SensorHistory />
                 </Card>
               </AnimatedStat>
             </Grid>
           </Grid>
-          {/* StatsCards Section - moved above Accident Impact Table */}
-          <Box sx={{ width: '100%', maxWidth: 900, mb: 4, zIndex: 2, mx: 'auto' }}>
-            <AnimatedStat delay={500}>
-              <StatsCards />
-            </AnimatedStat>
-          </Box>
-          {/* Predictive Risk Card Section */}
-          <Box sx={{ width: '100%', maxWidth: 900, mb: 4, zIndex: 2, mx: 'auto' }}>
-            <AnimatedStat delay={550}>
-              <PredictiveRiskCard lat={lat} lng={lng} timestamp={timestamp} />
-            </AnimatedStat>
-          </Box>
-          {/* Accident Impact Table Section */}
-          <Grid container justifyContent="center" sx={{ maxWidth: 1400, mx: 'auto', mb: 4 }}>
-            <Grid item xs={12}>
-              <AccidentImpactTable />
-            </Grid>
-          </Grid>
-          {/* Animated Divider Bottom */}
-          <Box sx={{ width: '100%', maxWidth: 1400, mb: 4, position: 'relative', zIndex: 2 }}>
-            <svg
-              viewBox="0 0 1440 40"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              style={{ width: '100%', height: '40px', display: 'block' }}
-            >
-              <path
-                d="M0,15 Q720,40 1440,15"
-                stroke="#1e3c72"
-                strokeWidth="3"
-                fill="none"
-              >
-                <animate
-                  attributeName="d"
-                  values="M0,15 Q720,40 1440,15;M0,30 Q720,80 1440,30;M0,15 Q720,40 1440,15"
-                  dur="7s"
-                  repeatCount="indefinite"
-                />
-              </path>
-            </svg>
-          </Box>
-          <Grow in={show} timeout={1200} style={{ transitionDelay: '600ms' }}>
-            <Card
-              sx={{
-                mt: 6,
-                mb: 3,
-                borderRadius: 5,
-                boxShadow: 14,
-                background: 'linear-gradient(100deg,#232526 0%,#414345 100%)',
-                border: 0,
-                maxWidth: 1400,
-                mx: 'auto',
-                zIndex: 2,
-                minHeight: 440,
-                p: 3,
-              }}
-              elevation={14}
-            >
-              <CardContent>
-                <Box display="flex" alignItems="center" mb={2}>
-                  <img
-                    src="https://img.icons8.com/fluency/128/ambulance.png"
-                    alt="Rescue"
-                    style={{ marginRight: 32, filter: 'drop-shadow(0 2px 16px #1e3c72)' }}
-                  />
-                  <Typography
-                    variant="h3"
-                    fontWeight="bold"
-                    color="#fff"
-                    sx={{ letterSpacing: 1, fontSize: 48 }}
-                  >
-                    SafeDrive & Rescue Measures
-                  </Typography>
-                </Box>
-                <Typography variant="h6" color="#b0bec5" mb={2} sx={{ fontSize: 26 }}>
-                  <i>Empowering you to respond confidently and safely in emergencies.</i>
-                </Typography>
-                <Box component="ol" sx={{ pl: 4, mb: 2, fontSize: 26, color: '#fff' }}>
-                  <li>
-                    <b>Stay Calm:</b> Assess the situation and prioritize your safety first.
-                  </li>
-                  <li>
-                    <b>Locate the Incident:</b> Use the dashboard map to pinpoint the accident site,
-                    view the address, and trace the route.
-                  </li>
-                  <li>
-                    <b>Navigate with Confidence:</b> Click{' '}
-                    <span style={{ color: '#90caf9', fontWeight: 'bold' }}>Navigate</span> on the
-                    map popup for instant GPS directions.
-                  </li>
-                  <li>
-                    <b>Alert Authorities:</b> Call emergency services and share the dashboard address
-                    for a swift response.
-                  </li>
-                  <li>
-                    <b>Provide Aid:</b> Offer first aid only if you are trained. Do not move the
-                    injured unless absolutely necessary.
-                  </li>
-                  <li>
-                    <b>Share Information:</b> Relay all dashboard data to responders on arrival for
-                    better care.
-                  </li>
-                  <li>
-                    <b>Drive Responsibly:</b> Obey traffic laws and stay alert when traveling to or
-                    from accident scenes.
-                  </li>
-                </Box>
-                <Box
-                  bgcolor="#232526"
-                  p={3}
-                  borderRadius={3}
-                  boxShadow={3}
-                  textAlign="center"
-                  mt={3}
-                >
-                  <Typography
-                    variant="h5"
-                    color="#90caf9"
-                    fontWeight="bold"
-                    sx={{ fontSize: 32 }}
-                  >
-                    SafeDrive Pro: Real-time accident location, live tracking, and emergency alerts—because every second counts.
-                  </Typography>
-                </Box>
-              </CardContent>
-            </Card>
-          </Grow>
         </Box>
       </Fade>
-      <StatusBar sensorData={sensorData} />
-    </>
   );
 }
-

@@ -31,7 +31,7 @@ export default function StatusBar({ sensorData }) {
   return (
     <>
       <AppBar position="fixed" color="default" sx={{ top: 'auto', bottom: 0, bgcolor: '#f5f5f5', boxShadow: '0 -2px 8px rgba(0,0,0,0.1)' }}>
-        <Toolbar sx={{ justifyContent: 'space-between', flexWrap: 'wrap' }}>
+        <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', alignItems: 'center', gap: 2 }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flexWrap: 'wrap' }}>
             {isDangerous ? (
               <WarningAmber color="error" fontSize="large" />
@@ -46,9 +46,9 @@ export default function StatusBar({ sensorData }) {
               <DisplaySettings color="primary" />
               <LCDDisplay text={sensorData && sensorData.lcd_display ? sensorData.lcd_display : 'No Display Data'} />
             </Box>
-          </Box>
-          
-          <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', alignItems: 'center' }}>
+</Box>
+
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexWrap: 'wrap' }}>
             <Chip 
               label={'Alcohol: ' + (sensorData && sensorData.alcohol ? sensorData.alcohol.toFixed(2) : '0.00')}
               color={sensorData && sensorData.alcohol > 0.05 ? 'error' : 'default'}
