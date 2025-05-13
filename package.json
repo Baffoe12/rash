@@ -8,7 +8,7 @@
     "@emotion/styled": "^11.14.0",
     "@mui/icons-material": "^5.17.1",
     "@mui/material": "^5.17.1",
-    "framer-motion": "^12.8.0",
+    "framer-motion": "^12.11.0",
     "leaflet": "^1.9.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
