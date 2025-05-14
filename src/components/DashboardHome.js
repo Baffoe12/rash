@@ -340,7 +340,7 @@ export default function DashboardHome() {
           {/* StatsCards Section - moved above Accident Impact Table */}
           <Box sx={{ width: '100%', maxWidth: 900, mb: 4, zIndex: 2, mx: 'auto' }}>
             <AnimatedStat delay={500}>
-              <StatsCards />
+              <StatsCards sensorData={sensorData} />
             </AnimatedStat>
           </Box>
           {/* Predictive Risk Card Section */}
