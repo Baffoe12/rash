@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Alert, Snackbar, Button, TextField, Box, Typography } from '@mui/material';
+import axios from 'axios';
 
 export default function EmergencyAlertStatus() {
   const [alertActive, setAlertActive] = useState(false);
@@ -50,7 +51,7 @@ export default function EmergencyAlertStatus() {
     setSnackbarOpen(true);
   };
 
-  const sendAlertWithLocation = () => {
+  const sendAlertWithLocation = async () => {
     if (!emergencyEmail) {
       alert('Please provide an emergency contact email.');
       return;
@@ -60,11 +61,26 @@ export default function EmergencyAlertStatus() {
       return;
     }
     setSending(true);
-    // TODO: Replace with real API call to send email with location
-    setTimeout(() => {
-      setSending(false);
+    try {
+      const API_URL = process.env.REACT_APP_BACKEND_URL || 'https://fire-h0u2.onrender.com';
+      const API_KEY = process.env.REACT_APP_API_KEY || 'safedrive_secret_key';
+      const alertPayload = {
+        email: emergencyEmail,
+        location: location,
+        timestamp: new Date().toISOString(),
+      };
+      await axios.post(`${API_URL}/api/emergency-alert`, alertPayload, {
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': API_KEY,
+        },
+      });
       alert('Emergency alert sent to ' + emergencyEmail + ' with location: ' + location.latitude + ', ' + location.longitude);
-    }, 1500);
+    } catch (error) {
+      alert('Failed to send emergency alert: ' + (error.response?.data?.error || error.message));
+    } finally {
+      setSending(false);
+    }
   };
 
   return (
