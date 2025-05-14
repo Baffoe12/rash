@@ -3,7 +3,91 @@ import { Box, Card, CardContent, Typography, Grid, CircularProgress, Alert } fro
 import { Dangerous, Speed, LocalBar, DirectionsCar, AirlineSeatReclineNormal } from '@mui/icons-material';
 import { motion } from 'framer-motion';
 
-export default function StatsCards() {
+export default function StatsCards({ sensorData }) {
+  // If sensorData is provided, display live sensor values instead of fetched stats
+  if (sensorData) {
+    const cards = [
+      {
+        title: 'Alcohol',
+        value: sensorData.alcohol,
+        icon: <LocalBar color="warning" sx={{ width: 40, height: 40 }} />,
+        color: '#ff9800',
+        description: 'Current alcohol level detected'
+      },
+      {
+        title: 'Vibration',
+        value: sensorData.vibration,
+        icon: <Speed color="warning" sx={{ width: 40, height: 40 }} />,
+        color: '#ff9800',
+        description: 'Current vibration level detected'
+      },
+      {
+        title: 'Distance',
+        value: sensorData.distance,
+        icon: <DirectionsCar color="primary" sx={{ width: 40, height: 40 }} />,
+        color: '#2196f3',
+        description: 'Current distance reading'
+      },
+      {
+        title: 'Impact',
+        value: sensorData.impact,
+        icon: <Dangerous color="error" sx={{ width: 40, height: 40 }} />,
+        color: '#f44336',
+        description: 'Current impact force detected'
+      },
+      {
+        title: 'Seatbelt',
+        value: sensorData.seatbelt ? 'Fastened' : 'Unfastened',
+        icon: <AirlineSeatReclineNormal color={sensorData.seatbelt ? "success" : "error"} sx={{ width: 40, height: 40 }} />,
+        color: sensorData.seatbelt ? '#4caf50' : '#f44336',
+        description: 'Seatbelt status'
+      },
+    ];
+
+    return (
+      <Grid container spacing={3} justifyContent="center" alignItems="stretch" sx={{maxWidth: 1200, mx: 'auto'}}>
+        {cards.map((card, index) => (
+          <Grid item xs={12} sm={6} md={4} lg={2.4} key={index}>
+            <Card sx={{ 
+              height: 200, 
+              display: 'flex', 
+              flexDirection: 'column', 
+              alignItems: 'center', 
+              justifyContent: 'center',
+              borderRadius: 4,
+              boxShadow: 3,
+              position: 'relative',
+              overflow: 'hidden',
+              '&::before': {
+                content: '""',
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '5px',
+                backgroundColor: card.color,
+              }
+            }}>
+              <CardContent sx={{textAlign: 'center', p: 2}}>
+                {card.icon}
+                <Typography variant="h4" sx={{ mt: 1, fontWeight: 'bold', color: card.color }}>
+                  {card.value}
+                </Typography>
+                <Typography variant="subtitle1" sx={{ fontWeight: 'medium' }}>
+                  {card.title}
+                </Typography>
+                <Typography variant="caption" sx={{ display: 'block', mt: 1, color: 'text.secondary' }}>
+                  {card.description}
+                </Typography>
+              </CardContent>
+            </Card>
+          </Grid>
+        ))}
+      </Grid>
+    );
+  }
+
+  // Original StatsCards code fetching stats from API
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -71,6 +155,7 @@ export default function StatsCards() {
       description: 'Total data points collected'
     },
   ];
+
 
   // Animation variants for container
   const containerVariants = {
