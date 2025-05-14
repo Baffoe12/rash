@@ -176,7 +176,10 @@ function MapPage() {
         }
         fetch(`${process.env.REACT_APP_API_URL || 'https://fire-h0u2.onrender.com'}/api/emergency-alert`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 
+            'Content-Type': 'application/json',
+            'x-api-key': process.env.REACT_APP_SAFEDRIVE_API_KEY || 'safedrive_secret_key'
+          },
           body: JSON.stringify({ email: emergencyEmail, latitude, longitude }),
         })
           .then(res => {
