@@ -63,7 +63,7 @@ export default function EmergencyAlertStatus() {
     setSending(true);
     try {
       const API_URL = process.env.REACT_APP_API_URL || 'https://fire-h0u2.onrender.com';
-      const API_KEY = process.env.SAFEDRIVE_API_KEY || 'safedrive_secret_key';
+      const API_KEY = process.env.REACT_APP_SAFEDRIVE_API_KEY || 'safedrive_secret_key';
       const alertPayload = {
         email: emergencyEmail,
         location: location,
