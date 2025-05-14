@@ -72,7 +72,7 @@ export default function EmergencyAlertStatus() {
       await axios.post(`${API_URL}/api/emergency-alert`, alertPayload, {
         headers: {
           'Content-Type': 'application/json',
-          'X-API-Key': API_KEY,
+          'x-api-key': API_KEY,
         },
       });
       alert('Emergency alert sent to ' + emergencyEmail + ' with location: ' + location.latitude + ', ' + location.longitude);
