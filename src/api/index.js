@@ -2,11 +2,11 @@ const API_URL = process.env.REACT_APP_API_URL || "https://fire-h0u2.onrender.com
 
 // API endpoints
 const ENDPOINTS = {
-  SENSOR: API_URL + "/api/sensor",
-  SENSOR_ALL: API_URL + "/api/sensor/all",
-  MAP: API_URL + "/api/map",
-  STATS: API_URL + "/api/stats",
-  ACCIDENTS: API_URL + "/api/accidents",
+  SENSOR: API_URL + "/api/sensor/",
+  SENSOR_ALL: API_URL + "/api/sensor/all/",
+  MAP: API_URL + "/api/map/",
+  STATS: API_URL + "/api/stats/",
+  ACCIDENTS: API_URL + "/api/accidents/",
 };
 
 async function fetchFromAPI(endpoint, options = {}) {
