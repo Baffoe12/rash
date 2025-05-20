@@ -13,6 +13,7 @@ function statusColor(val, type) {
 }
 
 export default function LiveSensorCard({ sensorData }) {
+  console.log('LiveSensorCard sensorData:', sensorData); // Debug log
   const [savedData, setSavedData] = useState([]);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');

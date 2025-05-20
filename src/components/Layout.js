@@ -6,6 +6,7 @@ import ReportIcon from '@mui/icons-material/Report';
 import MapIcon from '@mui/icons-material/Map';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import DownloadIcon from '@mui/icons-material/Download';
+import GamepadIcon from '@mui/icons-material/Gamepad';
 
 export default function Layout() {
   const linkStyle = {
@@ -48,7 +49,7 @@ export default function Layout() {
           <DownloadIcon fontSize="small" />
           Download
         </NavLink>
-      </nav>
+            </nav>
       <div className="main-content">
         <Outlet />
       </div>

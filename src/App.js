@@ -21,7 +21,7 @@ const router = createBrowserRouter(
         { path: '/map', element: <MapPage /> },
         { path: '/stats', element: <StatsPage /> },
         { path: '/download', element: <DownloadPage /> },
-      ],
+            ],
     },
   ],
   {
