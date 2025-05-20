@@ -15,11 +15,12 @@ const HeartRateCard = () => {
     const abortController = new AbortController();
     let timerId;
 
-    const fetchHeartRate = async () => {
+const fetchHeartRate = async () => {
       try {
         setLoading(true);
         setError(null);
         const data = await api.getLatestSensorData(abortController.signal); // Pass abort signal
+        console.log('Fetched sensor data:', data); // Added debug log
         if (isMounted) {
           if (data && data.heart_rate !== undefined) {
             setHeartRate(data.heart_rate);
