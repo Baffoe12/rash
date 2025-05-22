@@ -20,20 +20,43 @@ export default function AccidentImpactTable() {
   };
 
   useEffect(() => {
-    fetch(`${process.env.REACT_APP_API_URL || 'https://fire-h0u2.onrender.com'}/api/map`)
+    fetch(`${process.env.REACT_APP_API_URL || 'https://fire-h0u2.onrender.com'}/api/accidents`)
       .then(res => {
         if (!res.ok) {
-          throw new Error(`Failed to fetch accident locations: ${res.status}`);
+          throw new Error(`Failed to fetch accident data: ${res.status}`);
         }
         return res.json();
       })
       .then(data => {
-        setAccidentImpacts(data);
+        // Map accident data to expected fields for display
+        const mappedData = data.map(e => {
+          let impactLevel = 'Low';
+          if (e.impact > 8) impactLevel = 'High';
+          else if (e.impact > 4) impactLevel = 'Medium';
+
+          const summaryParts = [];
+          if (e.alcohol > 0.05) summaryParts.push('Alcohol detected');
+          if (e.seatbelt === false) summaryParts.push('Seatbelt not worn');
+          if (e.impact > 8) summaryParts.push('Severe impact detected');
+          if (e.vibration > 5) summaryParts.push('High vibration');
+          if (e.distance < 10) summaryParts.push('Proximity warning');
+          if (e.lcd_display) summaryParts.push(`LCD: "${e.lcd_display}"`);
+
+          return {
+            id: e.id,
+            type: 'Accident',
+            time: e.timestamp ? new Date(e.timestamp).toLocaleString() : '',
+            impactLevel,
+            summary: summaryParts.join('. ') + (summaryParts.length > 0 ? '.' : ''),
+            details: e.lcd_display || '',
+          };
+        });
+        setAccidentImpacts(mappedData);
         setError(null);
       })
       .catch(err => {
-        console.error('Error fetching accident locations:', err);
-        setError('Failed to fetch accident locations. Please try again later.');
+        console.error('Error fetching accident data:', err);
+        setError('Failed to fetch accident data. Please try again later.');
       });
   }, []);
 
